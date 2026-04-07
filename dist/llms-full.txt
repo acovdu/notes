@@ -1,0 +1,68 @@
+---
+url: /@pages/tagsPage.md
+---
+
+
+---
+
+---
+url: /05.大模型/目录.md
+---
+
+
+---
+
+---
+url: /@pages/categoriesPage.md
+---
+
+
+---
+
+---
+url: /@pages/archivesPage.md
+---
+
+
+---
+
+---
+url: /@pages/articleOverviewPage.md
+---
+
+
+---
+
+---
+url: /05.大模型/06.AI学习指导.md
+---
+
+## 大模型破冰之旅
+
+### 语言准备
+
+大模型需要学习的语言：Python
+
+主语言：Java、C++等
+
+### AI必备概念
+
+AI历史上的四次大发展
+
+->1950年 人工智能，1980年 机器学习，2010年 深度学习，2020年 大模型，->AI大发展
+
+![image-20260330175800288](/assets/image-20260330175800288.C2S1uvzO.png)
+
+---
+
+---
+url: /@pages/loginPage.md
+---
+
+
+---
+
+---
+url: /@pages/riskLinkPage.md
+---
+
