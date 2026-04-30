@@ -9,13 +9,31 @@
 
 
 
+
+### Hibernate
+
+- [Hibernate3](/18.Spring生态/08.Hibernate/08.Hibernate3.md)
+- [Hibernate3-HQL](/18.Spring生态/08.Hibernate/12.Hibernate3-HQL.md)
+- [Hibernate4](/18.Spring生态/08.Hibernate/16.Hibernate4.md)
+
+### MySQL
+
+- [MySQL安装](/30.数据库/35.MySQL/20.MySQL安装.md)
+- [MySQL笔记](/30.数据库/35.MySQL/30.MySQL笔记.md)
+- [MySQL优化](/30.数据库/35.MySQL/40.MySQL优化.md)
+
+
+
 ### Other
 
 - [标签](/@pages/tagsPage.md)
 - [大模型](/05.大模型/目录.md)
 - [分类](/@pages/categoriesPage.md)
 - [归档](/@pages/archivesPage.md)
+- [数据库](/30.数据库/目录.md)
 - [文章清单](/@pages/articleOverviewPage.md)
 - [Java](/12.Java/目录.md)
-- [Untitled](/@pages/riskLinkPage.md)
+- [MySQL](/30.数据库/35.MySQL/目录.md)
+- [Spring生态](/18.Spring生态/目录.md)
 - [Untitled](/@pages/loginPage.md)
+- [Untitled](/@pages/riskLinkPage.md)
