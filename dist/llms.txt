@@ -10,6 +10,7 @@
 
 
 
+
 ### Hibernate
 
 - [Hibernate3](/18.Spring生态/08.Hibernate/08.Hibernate3.md)
@@ -24,9 +25,12 @@
 
 
 
+
+
 ### Other
 
 - [标签](/@pages/tagsPage.md)
+- [部署](/54.部署/目录.md)
 - [大模型](/05.大模型/目录.md)
 - [分类](/@pages/categoriesPage.md)
 - [归档](/@pages/archivesPage.md)

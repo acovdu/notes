@@ -6,6 +6,13 @@ url: /@pages/tagsPage.md
 ---
 
 ---
+url: /54.部署/目录.md
+---
+
+
+---
+
+---
 url: /05.大模型/目录.md
 ---
 
@@ -34,13 +41,6 @@ url: /30.数据库/目录.md
 ---
 
 ---
-url: /@pages/articleOverviewPage.md
----
-
-
----
-
----
 url: /05.大模型/06.AI学习指导.md
 ---
 
@@ -57,6 +57,251 @@ url: /05.大模型/06.AI学习指导.md
 AI历史上的四次大发展
 
 ![image-20260330175800288](/assets/image-20260330175800288.C2S1uvzO.png)
+
+---
+
+---
+url: /@pages/articleOverviewPage.md
+---
+
+
+---
+
+---
+url: /54.部署/Docker常用操作.md
+---
+
+## 初识Docker与容器
+
+### 介绍
+
+::: note 什么是Docker
+Docker是基于Go语言实现的开源容器项目。\
+Docker容器技术是基于Linux容器技术的基础上开发而来的。\
+Docker是一个开源的软件部署解决方案，也是轻量级的应用部署容器框架，它轻巧，且易移植
+:::
+
+::: note Docker能做什么
+docker可以打包、发布、运行任何应用\
+如何正确的构建应用，通过容器来打包应用、解耦应用和运行平台。在迁移的时候，只需要在新的服务器上启动需要的容器就可以了，无论新旧服务器是否是一类型的平台。这样为我们节约了时间，降低部署应用的风险。
+
+使用Docker提高了开发的运维的优势，能更快速的交付和部署、更搞笑的资源利用、更轻松的迁移和扩展、更简单的更新管理等。
+:::
+
+### 比较
+
+容器技术与传统虚拟机技术的比较
+
+| 特性 | 容器 | 虚拟机 |
+|------|------ | ------ |
+| 启动速度 | 秒级 | 分钟级 |
+| 性能 | 接近原生| 较弱 |
+| 内存代价 | 很小 | 较多 |
+| 硬盘使用 | 一般为MB  | 一般为GB |
+| 运行密度 | 单机支持上千个容器 | 一般几十个 |
+| 隔离性 | 安全隔离 | 完全隔离 |
+| 迁移性 | 优秀 | 一般 |
+
+**特点**
+
+* 速度飞快以及优雅的隔离框架
+* 物美价廉
+* CPU/内存的低消耗
+* 快速开/关机
+* 跨云计算基础构架
+
+**核心理念**
+
+1. Docker镜像类似于虚拟机镜像，可以将它理解为一个只读的模板。
+2. Docker容器类似于一个轻量级的沙箱，Docker利用容器来运行和隔离应用。
+3. Docker仓库类似于代码仓库，是Docker集中存放镜像文件的地方。
+
+## 安装启动
+
+### 安装
+
+CentOS 7下通过yum安装Docker
+
+```sh
+#安装yum工具包
+yum install -y yum-utils
+
+#添加yum源
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+#安装
+yum -y install docker-ce
+ 
+ #或者下载rpm包安装
+yum -y localinstall docker-ce-18.03.1.ce-1.el7.centos.x86_64.rpm
+```
+
+### 启动
+
+```sh
+#启动
+systemctl start docker
+
+#停止Docker
+systemctl stop docker
+
+#查看Docker运行状态
+systemctl status docker
+
+#重启docker
+systemctl restart docker
+
+#设置Docker开机启动
+systemctl enable docker
+
+#取消docker开机自启动
+systemctl disable docker
+
+#查看版本
+docker version	
+```
+
+## 镜像
+
+### 加速访问
+
+```sh
+vi  /etc/docker/daemon.json
+#往里面添加
+{
+    "registry-mirrors": ["https://registry.docker-cn.com"],
+    "live-restore": true
+}
+```
+
+### 拉取镜像
+
+```sh
+docker [image] pull NAME [ :TAG]
+
+#指定仓库地址
+docker [image] pull [仓库地址/]<镜像名>[:TAG]	
+
+#指定镜像代理服务地址
+docker [image] pull --registry-mirror=proxy_URL NAME [ :TAG]	
+
+#比如下载MySQL5.7镜像
+docker pull mysql:5.7
+```
+
+### 查看
+
+Docker镜像保存在/var/lib/docker目录下
+
+```sh
+docker images
+```
+
+### 删除
+
+```sh
+
+docker rmi docker.io/tomcat:7.0.77-jre7     
+#或者
+docker rmi 镜像id
+```
+
+## 容器
+
+### 启停
+
+```sh
+#查看在运行的容器
+docker ps
+
+#查看所有容器
+docker ps -a
+
+#启动容器
+docker start 容器名或id
+
+#停止容器
+docker stop 容器名或id
+
+#重启容器
+docker restart 容器名或id
+
+#使用镜像创建容器并运行
+docker run -dit --privileged --name=centos7 daocloud.io/centos:latest /usr/sbin/init
+```
+
+::: note 参数说明
+centos7：自定义容器名\
+\--privileged：大约在0.6版，privileged被引入docker。使用该参数，container内的root拥有真正的root权限。否则，container内的root只是外部的一个普通用户权限。privileged启动的容器，可以看到很多host上的设备，并且可以执行mount。甚至允许你在docker容器中启动docker容器
+:::
+
+### 修改容器启动参数
+
+**1、Docker 命令修改**
+
+```sh
+docker container update --restart=always 容器名字
+```
+
+**2、直接改配置文件**
+
+首先停止容器，不然无法修改配置文件
+
+配置文件路径为：`/var/lib/docker/containers/容器ID`
+
+在该目录下找到一个文件 `hostconfig.json` ，找到该文件中关键字 `RestartPolicy`
+
+修改前配置：`"RestartPolicy":{"Name":"no","MaximumRetryCount":0}`
+
+修改后配置：`"RestartPolicy":{"Name":"always","MaximumRetryCount":0}`
+
+最后启动容器。
+
+### 看run启动日志
+
+```sh
+docker logs -f -t --tail 20 <容器id/容器名>
+```
+
+### 使用容器构建镜像
+
+```sh
+docker commit -a authorName -m "提交说明" centos7 authorName/cent7
+```
+
+::: note 参数说明
+centos7 容器名\
+-a :提交的镜像作者\
+-c :使用Dockerfile指令来创建镜像\
+-m :提交时的说明文字\
+-p :在commit时，将容器暂停
+:::
+
+更多可以参考：[Docker中文文档](http://www.dockerinfo.net/document)
+
+### 安装MySQL
+
+```sh
+#下载MySQL5.7镜像
+docker pull mysql:5.7
+
+#运行
+#-e MYSQL_ROOT_PASSWORD 设置mysql的root用户秘密
+docker run --name hi-mysql -e MYSQL_ROOT_PASSWORD=my-pwd -d mysql:5.7	
+
+#端口映射
+docker run --name hi-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=my-pwd -d mysql:5.7	
+```
+
+### 安装Nginx
+
+```sh
+#下载nginx镜像
+docker pull nginx:1.14
+
+#创建并启动容器
+docker run -dit -p 80:80 --name nginx nginx:1.14
+```
 
 ---
 
@@ -7428,8 +7673,7 @@ url: /12.Java/目录.md
 ---
 
 ---
-url: /12.Java/20.并发工具类.md
-description: 一些Java并发相关的工具类。。
+url: /12.Java/28.Java并发工具.md
 ---
 
 ### Fork/Join
@@ -7847,7 +8091,6 @@ public class App {
 
 ---
 url: /12.Java/12.Java基础.md
-description: 一些Java的基础知识。。
 ---
 
 ## 前言
@@ -8924,6 +9167,626 @@ Charlie
 下周: 2026-04-16
 间隔: 7天
 ```
+
+---
+
+---
+url: /12.Java/20.Java线程.md
+---
+
+## 线程基础和线程之间的共享与协作
+
+### Thread常用方法
+
+| 方法 | 说明 |
+|------|------|
+| static int activeCount()  | 返回当前线程的线程组及其子组中活动线程数量的估计值。 |
+| void start() | 使该线程开始执行;Java虚拟机调用这个线程的run方法。 |
+| static Thread currentThread()   | 获取当前执行线程引用 |
+| long getId() | 获取线程id |
+| String getName()  | 获取线程名 |
+| void setName(String name) |  更改线程的名称。 |
+| int getPriority()   | 获取线程优先级值 |
+| int setPriority(int priority) | 更改线程的优先级。 |
+| Thread.State getState() | 获取线程状态 |
+| void interrupt() | 中断这个线程 |
+| boolean isInterrupted() | 查看线程是否被中断。 |
+| static boolean interrupted() | 测试当前线程是否已被中断，调用这个方法会将中断标识恢复成false。 |
+| static void yield() | 向调度程序提示，当前线程愿意放弃当前线程对处理器的使用。 |
+| void run() | 线程运行时执行的会调用此方法 |
+| void sleep(long miliseconds) | 使当前正在执行的线程休眠(暂时停止执行)达指定的毫秒数。 |
+| void join() | 等待线程死亡。 |
+| void join(long miliseconds) |  按指定的毫秒数等待线程死亡。 |
+| boolean isAlive() | 测试线程是否处于活动状态。 |
+| void suspend() | 用于挂起线程(已弃用)。 |
+| void resume() | 用于恢复挂起的线程(已弃用)。 |
+| void stop() | 用于停止线程(已弃用)。 |
+| boolean isDaemon() | 测试该线程是否为守护线程。 |
+| void setDaemon(boolean b) | 将线程标记为守护线程，需在调用start方法前设置。 |
+
+### 启动线程的四种方式
+
+继承Thread
+
+```java
+class UseThread extends Thread {
+    @Override
+    public void run() {
+        System.out.println("UseThread object run ...");
+    }
+    
+    public static void main(String[] args) {
+        UseThread useThread = new UseThread();
+        useThread.start();
+    }
+}
+```
+
+实现Runnable
+
+```java
+class UseRunnable implements Runnable {
+    @Override
+    public void run() {
+        System.out.println("UseRunnable object run ...");
+    }
+    public static void main(String[] args) {
+        UseRunnable useRunnable = new UseRunnable();
+        Thread thread = new Thread(useRunnable);
+        thread.start();
+    }
+}
+```
+
+实现Callable
+
+```java
+class UseCallable implements Callable<String> {
+    @Override
+    public String call() throws Exception {
+        System.out.println("UseCallable object call ...");
+        return "call result";
+    }
+
+    public static void main(String[] args) {
+        UseCallable callable = new UseCallable();
+        FutureTask task = new FutureTask(callable);
+        Thread thread = new Thread(task);
+        thread.start();
+        try {
+            System.out.println("线程运行返回:" + task.get());
+        } catch (InterruptedException | ExecutionException e) {
+            task.cancel(true);//取消计算
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+使用Executors
+
+```java
+class NewThread {
+    public static void main(String[] args) {
+        Thread t = Executors.defaultThreadFactory().newThread(() -> System.out.println("使用Executors创建线程..."));
+        t.start();
+    }
+}
+```
+
+### 使用实现Runnable的好处
+
+* 避免了单继承的局限性，一个类可以实现多个接口
+* 适合于资源的共享
+
+以卖票为例，使用继承Thread：
+
+```java
+class Ticket {
+    private int ticketNum;
+
+    public Ticket(int ticketNum) {
+        this.ticketNum = ticketNum;
+    }
+
+    public void sell() {
+        while (true) {
+            synchronized (this) {
+                if (ticketNum <= 0) break;
+                ticketNum--;
+                System.out.println(Thread.currentThread().getName() + "卖出一张票，还剩[" + ticketNum + "]张票");
+            }
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+class TicketThread extends Thread {
+    private Ticket ticket;
+
+    public TicketThread(Ticket ticket, String threadName) {
+        super(threadName);
+        this.ticket = ticket;
+    }
+
+    @Override
+    public void run() {
+        ticket.sell();
+    }
+
+    public static void main(String[] args) {
+        //3个线程卖10张票
+        Ticket ticket = new Ticket(10);
+        new TicketThread(ticket, "线程1").start();
+        new TicketThread(ticket, "线程2").start();
+        new TicketThread(ticket, "线程3").start();
+    }
+}
+```
+
+使用实现Runnable实现：
+
+```java
+class TicketRunnable implements Runnable {
+    private int ticketNum;
+
+    public TicketRunnable(int ticketNum) {
+        this.ticketNum = ticketNum;
+    }
+
+    @Override
+    public void run() {
+
+        while (true) {
+            synchronized (this) {
+                if (ticketNum <= 0) break;
+                ticketNum--;
+                System.out.println(Thread.currentThread().getName() + "卖出一张票，还剩[" + ticketNum + "]张票");
+            }
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        //3个线程卖10张票
+        TicketRunnable ticket = new TicketRunnable(10);
+        new Thread(ticket, "线程1").start();
+        new Thread(ticket, "线程2").start();
+        new Thread(ticket, "线程3").start();
+    }
+}
+```
+
+### 安全的停止线程方法
+
+```java
+public class RunnableImpl implements Runnable {
+    @Override
+    public void run() {
+
+        //当执行中断方法interrupt()后,线程并不会停止,而是会继续执行完,线程与线程之间是一种协作状态
+//        while(true){
+//            System.out.println("UseThread object run ...");
+//        }
+
+        //需要受到控制的话,使用isInterrupted()方法判断一下
+//        while (!Thread.currentThread().isInterrupted()) {
+//            System.out.println(Thread.currentThread().getName() + " is run ...");
+//        }
+
+        //使用interrupted()方法判断中断状态会将中断标识恢复成false
+//        while (!Thread.currentThread().interrupted()) {
+//            System.out.println(Thread.currentThread().getName() + " is run ...");
+//        }
+
+        while (!Thread.currentThread().isInterrupted()) {
+            System.out.println(Thread.currentThread().getName() + " is run ...");
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                //抛出InterruptedException异常后中断标识会恢复成false
+                //如果抛异常后需要中断,需要在调用interrupt()方法进行中断操作
+                Thread.currentThread().interrupt();
+            }
+        }
+        System.out.println(Thread.currentThread().getName() + " interrupt flag is:" + Thread.currentThread().isInterrupted());
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        RunnableImpl runnable = new RunnableImpl();
+        Thread t = new Thread(runnable);
+        t.start();
+        Thread.sleep(2000);
+        t.interrupt();
+    }
+}
+```
+
+线程的停止由线程本身决定，使用线程的引用调用interrupt()方法只是向线程打个招呼。\
+线程的stop、resume、suspend方法不建议使用，stop方法可以导致线程不正确的释放资源，suspend方法容易导致线程死锁
+
+### 守护线程
+
+守护线程是同主线程一起死亡的线程，try中的finally块中的内容不一定会执行。
+
+设置守护线程方法：在线程调用start()方法之前调用线程的void setDaemon(boolean on)方法，设置为ture，再调用start()方法，这个线程即为守护线程。
+
+示例
+
+```java
+/**
+ * @CalssName DaemonThreadDemo
+ * @Description 守护进程
+ * @since JDK 1.8
+ */
+public class DaemonThreadDemo {
+    public static void main(String[] args) throws InterruptedException {
+        Thread t = new Thread(() -> {
+            try {
+                while (!Thread.currentThread().isInterrupted()) {
+                    System.out.println("I use Lambda expression...");
+                }
+            } finally {
+                System.out.println("finally code...");
+            }
+        });
+        t.setDaemon(true);
+        t.start();
+        Thread.sleep(50);
+    }
+}
+```
+
+### 线程优先级
+
+设置线程优先级示例
+
+```java
+/**
+ * @CalssName ThreadPriority
+ * @Description 线程优先级
+ * @since JDK 1.8
+ */
+public class ThreadPriority {
+    public static void main(String[] args) {
+
+        Runnable runnable = new Runnable() {
+            int t1count = 0, t2count = 0;
+
+            @Override
+            public void run() {
+                while (!Thread.currentThread().isInterrupted()) {
+                    synchronized (this) {
+                        String tName = Thread.currentThread().getName();
+                        if ("线程1".equals(tName)) {
+                            t1count++;
+                            System.out.println(tName + " run... " + t1count + "次");
+                        }
+                        if ("线程2".equals(tName)) {
+                            t2count++;
+                            System.out.println(tName + " run... " + t2count + "次");
+                        }
+
+                    }
+                }
+            }
+        };
+        Thread t1 = new Thread(runnable, "线程1");
+        Thread t2 = new Thread(runnable, "线程2");
+        t1.setPriority(Thread.MAX_PRIORITY);//最大优先级10
+        t2.setPriority(Thread.MIN_PRIORITY);//最小优先级1
+        t1.start();
+        t2.start();
+    }
+}
+```
+
+运行效果如下
+
+线程优先级根据系统不同，运行时的实现方式不同，并不是设置的越高，CPU就一定会优先执行
+
+### synchronized内置锁
+
+对象锁：对象锁锁的是类new出来的对象\
+类锁：类锁锁的是类的Class对象，Java虚拟机会保证每个类只有一个Class对象
+
+类锁和对象锁运行示例
+
+```java
+public class SynchronizedDemo {
+    //对象锁
+    public synchronized void test1() {
+        synchronized (this) {
+            //这也是对象锁
+            System.out.println("方法中使用对象锁...");
+        }
+        int i = 5;
+        while (i-- > 0) {
+            System.out.println(Thread.currentThread().getName() + " : " + i);
+            try {
+                Thread.sleep(600);
+            } catch (InterruptedException ie) {
+            }
+        }
+    }
+
+    //类锁
+    public synchronized static void test2() {
+        synchronized (SynchronizedDemo.class) {
+            //这个也是类锁
+            System.out.println("方法中使用类锁...");
+        }
+        int i = 5;
+        while (i-- > 0) {
+            System.out.println(Thread.currentThread().getName() + " : " + i);
+            try {
+                Thread.sleep(250);
+            } catch (InterruptedException ie) {
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        final SynchronizedDemo myt2 = new SynchronizedDemo();
+        Thread test1 = new Thread(new Runnable() {
+            public void run() {
+                myt2.test1();
+            }
+        }, "test1");
+        Thread test2 = new Thread(new Runnable() {
+            public void run() {
+                SynchronizedDemo.test2();
+            }
+        }, "test2");
+        test1.start();
+        test2.start();
+    }
+}
+```
+
+运行结果
+
+```
+方法中使用对象锁...
+test1 : 4
+方法中使用类锁...
+test2 : 4
+test2 : 3
+test2 : 2
+test1 : 3
+test2 : 1
+test2 : 0
+test1 : 2
+test1 : 1
+test1 : 0
+```
+
+### volatile的使用
+
+volatile不是线程安全的，它能保证数据的可见性，不能保证数据的原子性。\
+volatile适用于只有一个线程写的，多个线程读的情况下使用，它的并发效率较高。\
+使用示例：
+
+```java
+public class VolatileDemo {
+    private volatile int score;
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+
+        //this.score = score + 10;//这种做法错误,因为volatile不能保证score的原子性
+    }
+}
+```
+
+### ThreadLocal的使用
+
+多个线程使用ThreadLocal变量的时候，各个线程均使用这个变量的副本，不会访问到其它线程的这个ThreadLocal变量值。
+
+| 方法 | 方法说明 |
+|------|------|
+| public T get() | 返回当前线程中ThreadLocal变量副本的值 |
+| protected T initialValue() | 返回当前线程中ThreadLocal变量副本的初始值 |
+| public void remove() | 删除当前线程中ThreadLocal变量副本的值 |
+| public void set(T value) | 设置当前线程中ThreadLocal变量副本的值 |
+
+下面是ThreadLocal变量和普通变量的区别示例
+
+```java
+/**
+ * @CalssName UseThreadLocal
+ * @Description ThreadLocalDemo
+ * @since JDK 1.8
+ */
+public class UseThreadLocal implements Runnable {
+    private int count = 0;
+    private ThreadLocal<Integer> threadLocal = new ThreadLocal() {
+        @Override
+        protected Integer initialValue() {
+            return 0;
+        }
+    };
+
+    @Override
+    public void run() {
+        String threadName = Thread.currentThread().getName();
+        synchronized (this) {
+            for (int i = 1; i <= 3; i++) {
+                this.count += this.count + i;
+                threadLocal.set(threadLocal.get() + i);
+                System.out.println(threadName + " this.count:" + this.count);
+                System.out.println(threadName + " threadLocal value:" + threadLocal.get());
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        UseThreadLocal useThreadLocalRunnable = new UseThreadLocal();
+        new Thread(useThreadLocalRunnable, "线程1").start();
+        new Thread(useThreadLocalRunnable, "线程2").start();
+        new Thread(useThreadLocalRunnable, "线程3").start();
+    }
+}
+```
+
+### 线程的等待与通知
+
+wait()：当前线程处于等待状态，并释放锁，既然要释放锁就必须先获得锁，而线程进入synchronized修饰的方法或者代码块中才能获得锁，所以wait()方法只能在synchronized修饰的方法或者代码块中才能使用。
+
+notify()：随机通知并唤醒一个使用wait()方法等待的线程。\
+notifyAll()：通知并唤醒所有使用wait()方法等待的线程。\
+尽量使用notifyAll()方法，因为使用notify()有可能发生信号丢失的情况。
+
+#### 等待与通知的标准范式
+
+1. 等待线程获取到对象的锁，调用wait()方法，放弃锁，进入等待队列
+2. 通知线程获取到对象的锁，调用对象的notify()方法
+3. 等待线程接受到通知，从等待队列移到同步队列，进入阻塞状态
+4. 通知线程释放锁后，等待线程获取到锁继续执行
+
+下面是使用wait()、notifyAll和synchronized内置锁做的简易链接池工具
+
+```java
+/**
+ * @CalssName DBPool
+ * @Description 数据库链接池工具
+ * @since JDK 1.8
+ */
+public class DBPool {
+
+    private static LinkedList<Connection> pool = new LinkedList<>();
+    private static String url = "jdbc:mysql://192.168.86.101:3306/mysql";
+    private static String username = "root";
+    private static String password = "my-pwd";
+
+    /**
+     * @return java.sql.Connection
+     * @Title getConnection
+     * @Description 从链接池中获取链接，如果没有链接了在指定有效时间内获取链接，不然返回null
+     * @Param [mills] 没有链接时指定获取去时间
+     * @Throws InterruptedException
+     */
+    public Connection getConnection(long mills) throws InterruptedException {
+        synchronized (pool) {
+            if (mills <= 0) {
+                while (pool.isEmpty()) {
+                    //链接被用光了，等待回收链接
+                    pool.wait();
+                }
+                //有链接了
+                return pool.removeFirst();
+            } else {
+                long overTime = System.currentTimeMillis() + mills;
+                long remain = mills;
+                while (pool.isEmpty() && remain > 0) {
+                    //没链接了，等待指定时间
+                    pool.wait(remain);
+                    remain = overTime - System.currentTimeMillis();
+                }
+//                指定时间后还没有链接就返回null
+                if (pool.isEmpty()) return null;
+                return pool.removeFirst();
+            }
+        }
+    }
+
+    /**
+     * @CalssName DBPool
+     * @Description 释放链接
+     * @since JDK 1.8
+     */
+    public void releaseConnection(Connection connection) {
+        if (connection != null) {
+            synchronized (pool) {
+                pool.addLast(connection);
+                //链接回收了，通知其他等待的线程使用
+                pool.notifyAll();
+            }
+        }
+    }
+
+    /**
+     * @CalssName DBPool
+     * @Description 初始化链接池
+     * @since JDK 1.8
+     */
+    public DBPool(int initSize) {
+        if (initSize > 0) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+                for (int i = 0; i < initSize; i++) {
+                    Connection connection = DriverManager.getConnection(url, username, password);
+                    pool.add(connection);
+                }
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    public static void main(String[] args) {
+        new DBPool(10);
+        System.out.println(pool.size());
+    }
+}
+```
+
+### Join方法
+
+如果线程A调用线程B的join()方法之后就必须等待线程B执行完，线程A才会执行
+
+示例
+
+```java
+/**
+ * @CalssName ThreadUseJoin
+ * @Description 使用join
+ * @since JDK 1.8
+ */
+public class ThreadUseJoin {
+    public static void main(String[] args) {
+
+        Thread t1 = new Thread(() -> {
+            for (int i = 0; i < 5; i++) {
+                System.out.println(Thread.currentThread().getName() + "，i：" + i);
+            }
+        }, "t1");
+        t1.start();
+
+        Thread t2 = new Thread(() -> {
+            try {
+                t1.join();//等t1线程执行完销毁才开始执行
+                for (int i = 0; i < 5; i++) {
+                    System.out.println(Thread.currentThread().getName() + "，i：" + i);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }, "t2");
+        t2.start();
+    }
+}
+```
+
+### Yield方法
+
+yield方法执行后并不会释放锁，而是放弃当前在CPU的运行权力，等待下一次CPU调度执行。
+
+执行sleep和notify、notifyAll方法也不会释放锁，notify、notifyAll执行之后唤醒其他线性，但唤醒的以及其他线程仍然处于阻塞状态，直到当前synchronized修饰的代码执行完其他线程才会获取锁
 
 ---
 
@@ -14143,6 +15006,18 @@ plsql操作数据
 url: /18.Spring生态/目录.md
 ---
 
+
+---
+
+---
+url: /42.调优/20.JVM调优.md
+---
+### 内存溢出分析
+
+内存溢出导出dump文件，启动参数：
+-XX:+HeapDumpOnOutOfMemoryError
+
+使用VisualVM分析，在Java8 v241下有这个
 
 ---
 
